@@ -2,10 +2,16 @@ package main
 
 import "fmt"
 
+type human struct {
+	hasHeart bool
+}
+
 type user struct {
 	name  string
 	email string
 	phone string
+
+	human human
 }
 
 type messageToSend struct {
@@ -27,7 +33,13 @@ func main() {
 		name:  "Jane",
 		email: "coco@co.co",
 		phone: "+123123123123",
+		human: human{
+			hasHeart: true,
+		},
 	}
+
+	recipient.human.hasHeart = false
+	fmt.Println(recipient)
 
 	messageToSendWrong := messageToSend{
 		message: "Check this out",
