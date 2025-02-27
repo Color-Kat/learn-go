@@ -22,6 +22,7 @@ func main() {
 		log.Fatal("PORT is not found in the environment")
 	}
 
+	// Main router
 	router := chi.NewRouter()
 
 	router.Use(cors.Handler(cors.Options{
@@ -33,12 +34,17 @@ func main() {
 		MaxAge:           300,
 	}))
 
+	// For versioning we created a separated router that we mounted to the main router
+	v1Router := chi.NewRouter()
+	v1Router.HandleFunc("/health", handlerReadiness)
+	router.Mount("/v1", v1Router)
+
 	server := &http.Server{
 		Handler: router,
 		Addr:    ":" + portString,
 	}
 
-	log.Println(".Server is running on port " + portString)
+	log.Println("Server is running on port " + portString)
 	err = server.ListenAndServe()
 
 	if err != nil {
