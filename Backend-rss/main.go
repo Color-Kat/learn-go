@@ -36,7 +36,8 @@ func main() {
 
 	// For versioning we created a separated router that we mounted to the main router
 	v1Router := chi.NewRouter()
-	v1Router.HandleFunc("/health", handlerReadiness)
+	v1Router.Get("/health", handlerReadiness)
+	v1Router.Get("/error", handlerError)
 	router.Mount("/v1", v1Router)
 
 	server := &http.Server{
