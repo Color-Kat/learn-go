@@ -40,12 +40,53 @@ func increaseSliceNumber(slice []int) []int {
 	return slice
 }
 
-func main() {
-	fmt.Println(lastWordLength("I love typescript                 "))
+func searchMatrix(matrix [][]int, target int) bool {
+	top, bottom := 0, len(matrix)-1
 
-	fmt.Println(increaseSliceNumber([]int{9, 9}))
-	fmt.Println(increaseSliceNumber([]int{9}))
-	fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
+	// Search among all rows
+	for top <= bottom {
+		middleRow := (top + bottom) / 2
+
+		if target < matrix[middleRow][0] {
+			bottom = middleRow - 1
+			continue
+		}
+
+		if target > matrix[middleRow][len(matrix[middleRow])-1] {
+			top = middleRow + 1
+			continue
+		}
+
+		// Search among one row
+		left, right := 0, len(matrix[middleRow])-1
+
+		for left <= right {
+			middleCol := (left + right) / 2
+
+			if matrix[middleRow][middleCol] == target {
+				return true
+			} else if matrix[middleRow][middleCol] < target {
+				left = middleRow + 1
+			} else {
+				right = middleRow - 1
+			}
+		}
+
+		break
+	}
+
+	return false
+}
+
+func main() {
+	// fmt.Println(lastWordLength("I love typescript                 "))
+
+	// fmt.Println(increaseSliceNumber([]int{9, 9}))
+	// fmt.Println(increaseSliceNumber([]int{9}))
+	// fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
+
+	fmt.Println(searchMatrix([][]int{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}}, 3))
+
 }
 
 // [1,2,3,4,9]
