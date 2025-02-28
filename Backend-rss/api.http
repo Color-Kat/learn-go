@@ -10,3 +10,13 @@ Content-Type: application/json
 GET http://localhost:8000/v1/users
 Content-Type: application/json
 Authorization: ApiKey 627d3cdc2f420d3b3f5b46d81778d6d726d86217081eb5c3ff1185adbe8d409c
+
+### Create feed
+POST http://localhost:8000/v1/feeds
+Content-Type: application/json
+Authorization: ApiKey 627d3cdc2f420d3b3f5b46d81778d6d726d86217081eb5c3ff1185adbe8d409c
+
+{
+  "name": "My post",
+  "url": "https://wagslane.dev/index.xml"
+}
