@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func lastWordLength(str string) int {
 	length := 0
@@ -78,6 +81,26 @@ func searchMatrix(matrix [][]int, target int) bool {
 	return false
 }
 
+func lengthOfLongestSubstring(s string) int {
+	l, r, maxStreak := 0, 0, 0
+
+	for _, char := range s {
+		repeatIndex := strings.LastIndex(s[l:r], string(char))
+
+		if repeatIndex >= 0 {
+			l = l + repeatIndex + 1
+		}
+
+		r++
+
+		if maxStreak < (r - l) {
+			maxStreak = r - l
+		}
+	}
+
+	return maxStreak
+}
+
 func main() {
 	// fmt.Println(lastWordLength("I love typescript                 "))
 
@@ -85,8 +108,19 @@ func main() {
 	// fmt.Println(increaseSliceNumber([]int{9}))
 	// fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
 
-	fmt.Println(searchMatrix([][]int{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}}, 3))
+	// fmt.Println(searchMatrix([][]int{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}}, 3))
 
+	// fmt.Println(lengthOfLongestSubstring("abcabcbb"))
+	// fmt.Println(lengthOfLongestSubstring("aa"))
+	// fmt.Println(lengthOfLongestSubstring("aaca"))
+	// fmt.Println(lengthOfLongestSubstring(""))
+	// fmt.Println(lengthOfLongestSubstring(" "))
+	// fmt.Println(lengthOfLongestSubstring("aab"))
+	// fmt.Println(lengthOfLongestSubstring("dvdf"))
+	// fmt.Println(lengthOfLongestSubstring("anviaj"))
+	// fmt.Println(lengthOfLongestSubstring("ohomm"))
+	// fmt.Println(lengthOfLongestSubstring("pwwkew"))
+	fmt.Println(lengthOfLongestSubstring("abcabcbb"))
 }
 
 // [1,2,3,4,9]
