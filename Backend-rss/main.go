@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/Color-Kat/learn-go/backend-rss/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -17,7 +18,11 @@ type apiConfig struct {
 }
 
 func main() {
-	err := godotenv.Load(".env")
+	var err error
+	feed, err := urlToFeed("https://wagslane.dev/index.xml")
+	fmt.Println(feed.Channel.Item[0].Title, err)
+
+	err = godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Can't find .env file")
 		return
