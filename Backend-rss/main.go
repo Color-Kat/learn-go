@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/Color-Kat/learn-go/backend-rss/internal/database"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
@@ -11,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type apiConfig struct {
@@ -19,8 +19,6 @@ type apiConfig struct {
 
 func main() {
 	var err error
-	feed, err := urlToFeed("https://wagslane.dev/index.xml")
-	fmt.Println(feed.Channel.Item[0].Title, err)
 
 	err = godotenv.Load(".env")
 	if err != nil {
@@ -44,10 +42,11 @@ func main() {
 	}
 
 	queries := database.New(connection)
-
 	apiConfig := apiConfig{
 		DB: queries,
 	}
+
+	go startScraping(apiConfig.DB, 10, time.Minute)
 
 	// Main router
 	router := chi.NewRouter()
@@ -85,7 +84,6 @@ func main() {
 
 	log.Println("Server is running on port " + portString)
 	err = server.ListenAndServe()
-
 	if err != nil {
 		log.Fatal(err)
 	}
