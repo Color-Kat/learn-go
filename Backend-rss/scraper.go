@@ -71,7 +71,7 @@ func scrapeFeed(db *database.Queries, waitGroup *sync.WaitGroup, feed database.F
 		)
 
 		if err != nil {
-			if !strings.Contains(err.Error(), "duplicate key") {
+			if !strings.Contains(err.Error(), "posts_url_key") {
 				log.Println("Error creating post:", err)
 			}
 			continue
