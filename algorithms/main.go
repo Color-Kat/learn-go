@@ -40,12 +40,32 @@ func increaseSliceNumber(slice []int) []int {
 	return slice
 }
 
-func main() {
-	fmt.Println(lastWordLength("I love typescript                 "))
+func isPalindrome(x int) bool {
+	if x < 0 {
+		return false
+	}
+	reverse := 0
+	copy := x
 
-	fmt.Println(increaseSliceNumber([]int{9, 9}))
-	fmt.Println(increaseSliceNumber([]int{9}))
-	fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
+	for i := 1; copy*10 > 1; i *= 10 {
+		reverse = reverse*10 + copy%10
+		copy /= 10
+	}
+
+	return x == reverse
+}
+
+func main() {
+	//// Task 1
+	//fmt.Println(lastWordLength("I love typescript                 "))
+	//
+	//// Task 2
+	//fmt.Println(increaseSliceNumber([]int{9, 9}))
+	//fmt.Println(increaseSliceNumber([]int{9}))
+	//fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
+
+	// Task 3
+	fmt.Println(isPalindrome(1221))
 }
 
 // [1,2,3,4,9]
