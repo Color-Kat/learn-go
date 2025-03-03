@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 func lastWordLength(str string) int {
 	length := 0
@@ -40,32 +43,84 @@ func increaseSliceNumber(slice []int) []int {
 	return slice
 }
 
-func isPalindrome(x int) bool {
-	if x < 0 {
-		return false
-	}
-	reverse := 0
-	copy := x
+func searchMatrix(matrix [][]int, target int) bool {
+	top, bottom := 0, len(matrix)-1
 
-	for i := 1; copy*10 > 1; i *= 10 {
-		reverse = reverse*10 + copy%10
-		copy /= 10
+	// Search among all rows
+	for top <= bottom {
+		middleRow := (top + bottom) / 2
+
+		if target < matrix[middleRow][0] {
+			bottom = middleRow - 1
+			continue
+		}
+
+		if target > matrix[middleRow][len(matrix[middleRow])-1] {
+			top = middleRow + 1
+			continue
+		}
+
+		// Search among one row
+		left, right := 0, len(matrix[middleRow])-1
+
+		for left <= right {
+			middleCol := (left + right) / 2
+
+			if matrix[middleRow][middleCol] == target {
+				return true
+			} else if matrix[middleRow][middleCol] < target {
+				left = middleRow + 1
+			} else {
+				right = middleRow - 1
+			}
+		}
+
+		break
 	}
 
-	return x == reverse
+	return false
+}
+
+func lengthOfLongestSubstring(s string) int {
+	l, r, maxStreak := 0, 0, 0
+
+	for _, char := range s {
+		repeatIndex := strings.LastIndex(s[l:r], string(char))
+
+		if repeatIndex >= 0 {
+			l = l + repeatIndex + 1
+		}
+
+		r++
+
+		if maxStreak < (r - l) {
+			maxStreak = r - l
+		}
+	}
+
+	return maxStreak
 }
 
 func main() {
-	//// Task 1
-	//fmt.Println(lastWordLength("I love typescript                 "))
-	//
-	//// Task 2
-	//fmt.Println(increaseSliceNumber([]int{9, 9}))
-	//fmt.Println(increaseSliceNumber([]int{9}))
-	//fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
+	// fmt.Println(lastWordLength("I love typescript                 "))
 
-	// Task 3
-	fmt.Println(isPalindrome(1221))
+	// fmt.Println(increaseSliceNumber([]int{9, 9}))
+	// fmt.Println(increaseSliceNumber([]int{9}))
+	// fmt.Println(increaseSliceNumber([]int{9, 9, 9, 9}))
+
+	// fmt.Println(searchMatrix([][]int{{1, 3, 5, 7}, {10, 11, 16, 20}, {23, 30, 34, 60}}, 3))
+
+	// fmt.Println(lengthOfLongestSubstring("abcabcbb"))
+	// fmt.Println(lengthOfLongestSubstring("aa"))
+	// fmt.Println(lengthOfLongestSubstring("aaca"))
+	// fmt.Println(lengthOfLongestSubstring(""))
+	// fmt.Println(lengthOfLongestSubstring(" "))
+	// fmt.Println(lengthOfLongestSubstring("aab"))
+	// fmt.Println(lengthOfLongestSubstring("dvdf"))
+	// fmt.Println(lengthOfLongestSubstring("anviaj"))
+	// fmt.Println(lengthOfLongestSubstring("ohomm"))
+	// fmt.Println(lengthOfLongestSubstring("pwwkew"))
+	fmt.Println(lengthOfLongestSubstring("abcabcbb"))
 }
 
 // [1,2,3,4,9]
