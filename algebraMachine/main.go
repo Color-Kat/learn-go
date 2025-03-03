@@ -1,15 +1,29 @@
+
 package main
 
 import (
 	"algebraMachine/matrixOperations"
+	//"algebraMachine/matrixOperations"
+	"algebraMachine/matrixOperationsDeprecated"
 	"algebraMachine/utils"
 	"fmt"
 	"strings"
 )
 
 func main() {
-	matrix1 := matrixOperations.Matrix{}
-	matrix2 := matrixOperations.Matrix{}
+	matrix1 := matrixOperations.Matrix[int]{
+		data: [][]int{
+				{1, 2},
+				{3, 4},
+			},
+		rows: 2,
+		cols: 2
+	}
+
+	return
+
+	matrix1 := matrixOperationsDeprecated.Matrix{}
+	matrix2 := matrixOperationsDeprecated.Matrix{}
 
 	for {
 		utils.ClearConsole()
@@ -43,7 +57,7 @@ func printMenu() string {
 	return option
 }
 
-func inputMatrix(matrix *matrixOperations.Matrix) {
+func inputMatrix(matrix *matrixOperationsDeprecated.Matrix) {
 	sizes := strings.Fields(utils.Prompt("Matrix size: "))
 
 	if len(sizes) < 2 {
@@ -61,7 +75,7 @@ func inputMatrix(matrix *matrixOperations.Matrix) {
 	matrix.Populate(rows, cols)
 }
 
-func chooseOperation(matrixA, matrixB matrixOperations.Matrix) {
+func chooseOperation(matrixA, matrixB matrixOperationsDeprecated.Matrix) {
 	operation := utils.Prompt(
 		"Choose an operation: \n" +
 			"1. MatrixAddition\n" +
@@ -73,9 +87,9 @@ func chooseOperation(matrixA, matrixB matrixOperations.Matrix) {
 
 	switch operation {
 	case "1":
-		matrixOperations.MatrixAddition(matrixA, matrixB)
+		matrixOperationsDeprecated.MatrixAddition(matrixA, matrixB)
 	case "2":
-		matrixOperations.MatrixSubtraction(matrixA, matrixB)
+		matrixOperationsDeprecated.MatrixSubtraction(matrixA, matrixB)
 	default:
 		utils.Prompt("Invalid operation")
 	}

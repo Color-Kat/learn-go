@@ -6,79 +6,90 @@ import (
 	"strings"
 )
 
-type Matrix struct {
-	data [][]int
+type Matrix[T int | bool] struct {
+	data [][]T
 	rows int
 	cols int
 }
 
-func (matrix *Matrix) Init(cols, rows int, neutralElement int) {
-	matrix.data = make([][]int, rows)
+func (matrix *Matrix[T]) Init(cols, rows int, neutralElement T) {
+	matrix.data = make([][]T, rows)
 	matrix.rows = rows
 	matrix.cols = cols
 
 	for i := 0; i < rows; i++ {
-		matrix.data[i] = make([]int, cols)
+		matrix.data[i] = make([]T, cols)
 		for j := 0; j < cols; j++ {
 			matrix.data[i][j] = neutralElement
 		}
 	}
 }
 
-func (matrix *Matrix) Populate(cols, rows int) {
-	matrix.data = make([][]int, rows)
+func (matrix *Matrix[T]) Populate(cols, rows int, parseString func(s string) T) {
+	matrix.data = make([][]T, rows)
 	matrix.rows = rows
 	matrix.cols = cols
 
 	for i := 0; i < rows; i++ {
-		matrix.data[i] = make([]int, cols)
+		matrix.data[i] = make([]T, cols)
 		matrix.data[i] = utils.MapSlice(
 			strings.Fields(utils.Prompt(fmt.Sprintf("Insert row %v (%v values )", i, cols))),
-			func(elem string) int {
-				value, _ := utils.ToInt(elem)
+			func(elem string) T {
+				value := parseString(elem)
 				return value
 			},
 		)
 	}
 }
 
-func MatrixAddition(matrixA, matrixB Matrix) {
-	if matrixA.rows != matrixB.rows || matrixA.cols != matrixB.cols {
-		utils.Prompt("Matrices must have the same size")
-		return
+type MatrixOperation struct {
+	currentRow, currentCol, currentCol2 int
+}
+
+// Add Base function for addiction matrices
+func (mo *MatrixOperation) Add(
+	rowsCount1, colsCount1 int,
+	rowsCount2, colsCount2 int,
+	addFunc func(),
+) {
+	if rowsCount1 != rowsCount2 || colsCount1 != colsCount2 {
+		panic("Rows and cols must be equal")
 	}
 
-	result := Matrix{}
-	result.Init(matrixA.rows, matrixA.cols, 0)
-
-	for i := 0; i < matrixA.rows; i++ {
-		for j := 0; j < matrixA.cols; j++ {
-			result.data[i][j] = matrixA.data[i][j] + matrixB.data[i][j]
+	for mo.currentRow = 0; mo.currentRow < rowsCount1; mo.currentRow++ {
+		for mo.currentCol = 0; mo.currentCol < colsCount1; mo.currentCol++ {
+			addFunc()
 		}
 	}
-
-	utils.Prompt(fmt.Sprintln("Result:\n", result.data))
 }
 
-func MatrixSubtraction(matrixA, matrixB Matrix) {
-	// Inverse elements of matrix b
-	matrixB.data = utils.MapSlice(matrixB.data, func(row []int) []int {
-		return utils.MapSlice(row, func(elem int) int {
-			return -elem
-		})
-	})
+func (mo *MatrixOperation) Multiply(
+	rowsCount1, colsCount1 int,
+	rowsCount2, colsCount2 int,
+	multiplyFunc func(),
+) {
+	if colsCount1 != rowsCount2 {
+		panic("Cols of matrix 1 must be equal to rows of matrix 2")
+	}
 
-	MatrixAddition(matrixA, matrixB)
+	for mo.currentRow = 0; mo.currentRow < rowsCount1; mo.currentRow++ {
+		for mo.currentCol2 = 0; mo.currentCol2 < colsCount2; mo.currentCol2++ {
+			for mo.currentCol = 0; mo.currentCol < colsCount1; mo.currentCol++ {
+				multiplyFunc()
+			}
+		}
+	}
 }
 
-func MatrixMultiplication(matrixA, matrixB *Matrix) {
-	utils.Prompt("Not implemented yet")
-}
-
-func MatrixMin(matrixA, matrixB *Matrix) {
-	utils.Prompt("Not implemented yet")
-}
-
-func MatrixMax(matrixA, matrixB *Matrix) {
-	utils.Prompt("Not implemented yet")
+func (mo *MatrixOperation) AddInt(
+	matrixA, matrixB Matrix[int],
+) {
+	resultMatrix := make([][]int, matrixA.rows)
+	mo.Add(
+		matrixA.rows, matrixA.cols,
+		matrixB.rows, matrixB.cols,
+		func() {
+			resultMatrix[mo.currentRow][mo.currentCol] = matrixA.data[mo.currentRow][mo.currentCol] + matrixB.data[mo.currentRow][mo.currentCol]
+		},
+	)
 }
