@@ -39,21 +39,10 @@ func CreateAccount() {
 
 	accountsVault := NewAccountsVault()
 	accountsVault.AddAccount(*myAccount)
-
-	jsonBytes, err := accountsVault.ToJSON()
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-
-	err = files.WriteFile("account.json", jsonBytes)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-		return
-	}
 }
 
 func FindAccount() {
-	file, err := files.ReadFile("account.json")
+	file, err := files.ReadFile("accounts.json")
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}

@@ -1,0 +1,15 @@
+{
+	"accounts": [
+		{
+			"login": "coco",
+			"password": "ac0ddf9e65d57b6a56b2453386cd5db5",
+			"url": "123"
+		},
+		{
+			"login": "root",
+			"password": "5f4dcc3b5aa765d61d8327deb882cf99",
+			"url": "dsf"
+		}
+	],
+	"updated_at": "2025-03-04T12:43:01.2577977+03:00"
+}

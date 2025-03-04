@@ -5,11 +5,11 @@ import (
 	"os"
 )
 
-func WriteFile(filename string, data []byte) error {
+func WriteFile(filename string, data []byte) {
 	file, err := os.Create(filename)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
-		return err
+		return
 	}
 	defer func(file *os.File) {
 		err := file.Close()
@@ -21,17 +21,15 @@ func WriteFile(filename string, data []byte) error {
 	_, err = file.Write(data)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
-		return err
+		return
 	}
-	fmt.Println("File written successfully")
 
-	return nil
+	fmt.Println("File written successfully")
 }
 
 func ReadFile(filename string) ([]byte, error) {
 	file, err := os.ReadFile(filename)
 	if err != nil {
-		fmt.Printf("Error: %s", err)
 		return nil, err
 	}
 	return file, nil
