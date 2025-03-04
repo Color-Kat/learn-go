@@ -1,51 +1,72 @@
 package account
 
 import (
-	"demo/json/files"
 	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 )
 
-type AccountsVault struct {
+type Db interface {
+	Read() ([]byte, error)
+	Write(data []byte)
+}
+
+type Vault struct {
 	Accounts  []Account `json:"accounts"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewAccountsVault() *AccountsVault {
-	file, err := files.ReadFile("accounts.json")
+type VaultWithDb struct {
+	Vault
+	db Db
+}
+
+func NewAccountsVault(db Db) *VaultWithDb {
+	file, err := db.Read()
 	if err != nil {
-		return &AccountsVault{
-			Accounts:  []Account{},
-			UpdatedAt: time.Now(),
+		return &VaultWithDb{
+			Vault: Vault{
+				Accounts:  []Account{},
+				UpdatedAt: time.Now(),
+			},
+			db: db,
 		}
 	}
 
-	var vault AccountsVault
+	var vault Vault
 	err = json.Unmarshal(file, &vault)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
-		return &AccountsVault{
-			Accounts:  []Account{},
-			UpdatedAt: time.Now(),
+		return &VaultWithDb{
+			Vault: Vault{
+				Accounts:  []Account{},
+				UpdatedAt: time.Now(),
+			},
+			db: db,
 		}
 	}
 
-	return &vault
+	return &VaultWithDb{
+		Vault: vault,
+		db:    db,
+	}
 }
 
-func (vault *AccountsVault) Save() {
-	// Save changes
-	file, err := vault.ToJSON()
+func (vault *VaultWithDb) Save() {
+	vault.UpdatedAt = time.Now()
+
+	// Save changes only in Vault, not in VaultWithDb
+	file, err := vault.Vault.ToJSON()
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 
-	files.WriteFile("accounts.json", file)
+	vault.db.Write(file)
 }
 
-func (vault *AccountsVault) ToJSON() ([]byte, error) {
+// ToJSON convert Vault (not VaultWithDb) to JSON
+func (vault *Vault) ToJSON() ([]byte, error) {
 	bytes, err := json.MarshalIndent(vault, "", "	")
 	if err != nil {
 		fmt.Printf("Error: %s", err)
@@ -55,14 +76,12 @@ func (vault *AccountsVault) ToJSON() ([]byte, error) {
 	return bytes, nil
 }
 
-func (vault *AccountsVault) AddAccount(account Account) {
+func (vault *VaultWithDb) AddAccount(account Account) {
 	vault.Accounts = append(vault.Accounts, account)
-	vault.UpdatedAt = time.Now()
-
 	vault.Save()
 }
 
-func (vault *AccountsVault) FindAccountByTag(tag string) []Account {
+func (vault *VaultWithDb) FindAccountByTag(tag string) []Account {
 	var accounts []Account
 
 	for _, account := range vault.Accounts {
@@ -74,7 +93,7 @@ func (vault *AccountsVault) FindAccountByTag(tag string) []Account {
 	return accounts
 }
 
-func (vault *AccountsVault) DeleteAccountByTag(tag string) bool {
+func (vault *VaultWithDb) DeleteAccountByTag(tag string) bool {
 	isDeleted := false
 	var newAccounts []Account
 	for _, account := range vault.Accounts {

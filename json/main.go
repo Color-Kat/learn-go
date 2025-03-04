@@ -2,6 +2,7 @@ package main
 
 import (
 	"demo/json/account"
+	"demo/json/files"
 	"demo/json/utils"
 	"fmt"
 )
@@ -9,7 +10,7 @@ import (
 func main() {
 	fmt.Println("__Accounts manager__")
 
-	accountsVault := account.NewAccountsVault()
+	accountsVault := account.NewAccountsVault(files.NewJsonDb("accounts.json"))
 
 Menu:
 	for {
@@ -38,7 +39,7 @@ func getMenu() int {
 	return variant
 }
 
-func CreateAccount(accountsVault *account.AccountsVault) {
+func CreateAccount(accountsVault *account.VaultWithDb) {
 	//myAccount := NewAccount("root", "password", "Hello, World!")
 
 	login := utils.PromptData("Enter login")
@@ -49,7 +50,7 @@ func CreateAccount(accountsVault *account.AccountsVault) {
 	accountsVault.AddAccount(*myAccount)
 }
 
-func FindAccount(accountsVault *account.AccountsVault) {
+func FindAccount(accountsVault *account.VaultWithDb) {
 	tag := utils.PromptData("Enter tag")
 	accounts := accountsVault.FindAccountByTag(tag)
 
@@ -62,7 +63,7 @@ func FindAccount(accountsVault *account.AccountsVault) {
 	}
 }
 
-func DeleteAccount(accountsVault *account.AccountsVault) {
+func DeleteAccount(accountsVault *account.VaultWithDb) {
 	tag := utils.PromptData("Enter tag")
 	isDeleted := accountsVault.DeleteAccountByTag(tag)
 
