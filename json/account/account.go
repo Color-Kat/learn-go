@@ -2,8 +2,6 @@ package account
 
 import (
 	"crypto/md5"
-	"demo/json/files"
-	"demo/json/utils"
 	"encoding/hex"
 	"fmt"
 )
@@ -11,7 +9,17 @@ import (
 type Account struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`
-	Url      string `json:"url"`
+	Tag      string `json:"tag"`
+}
+
+func NewAccount(username, password, tag string) *Account {
+	a := &Account{
+		Login: username,
+		Tag:   tag,
+	}
+	a.setPassword(password)
+
+	return a
 }
 
 func (a *Account) setPassword(password string) {
@@ -19,36 +27,8 @@ func (a *Account) setPassword(password string) {
 	a.Password = hex.EncodeToString(hash[:])
 }
 
-func NewAccount(username, password, bio string) *Account {
-	a := &Account{
-		Login: username,
-		Url:   bio,
-	}
-	a.setPassword(password)
-
-	return a
-}
-
-func CreateAccount() {
-	//myAccount := NewAccount("root", "password", "Hello, World!")
-
-	login := utils.PromptData("Enter login")
-	password := utils.PromptData("Enter password")
-	url := utils.PromptData("Enter url")
-	myAccount := NewAccount(login, password, url)
-
-	accountsVault := NewAccountsVault()
-	accountsVault.AddAccount(*myAccount)
-}
-
-func FindAccount() {
-	file, err := files.ReadFile("accounts.json")
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	fmt.Println(string(file))
-}
-
-func DeleteAccount() {
-
+func (a *Account) Output() {
+	fmt.Println("--- " + a.Tag + " ---")
+	fmt.Println("Login:", a.Login)
+	fmt.Println("Password:", a.Password)
 }

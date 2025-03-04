@@ -8,3 +8,7 @@ func PromptData(prompt string) string {
 	fmt.Scan(&res)
 	return res
 }
+
+func remove[T any](slice []T, index int) []T {
+	return append(slice[:index], slice[index+1:]...)
+}

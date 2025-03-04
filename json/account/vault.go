@@ -4,6 +4,7 @@ import (
 	"demo/json/files"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -34,10 +35,7 @@ func NewAccountsVault() *AccountsVault {
 	return &vault
 }
 
-func (vault *AccountsVault) AddAccount(account Account) {
-	vault.Accounts = append(vault.Accounts, account)
-	vault.UpdatedAt = time.Now()
-
+func (vault *AccountsVault) Save() {
 	// Save changes
 	file, err := vault.ToJSON()
 	if err != nil {
@@ -55,4 +53,39 @@ func (vault *AccountsVault) ToJSON() ([]byte, error) {
 	}
 
 	return bytes, nil
+}
+
+func (vault *AccountsVault) AddAccount(account Account) {
+	vault.Accounts = append(vault.Accounts, account)
+	vault.UpdatedAt = time.Now()
+
+	vault.Save()
+}
+
+func (vault *AccountsVault) FindAccountByTag(tag string) []Account {
+	var accounts []Account
+
+	for _, account := range vault.Accounts {
+		if strings.Contains(account.Tag, tag) {
+			accounts = append(accounts, account)
+		}
+	}
+
+	return accounts
+}
+
+func (vault *AccountsVault) DeleteAccountByTag(tag string) bool {
+	isDeleted := false
+	var newAccounts []Account
+	for _, account := range vault.Accounts {
+		if strings.Contains(account.Tag, tag) {
+			isDeleted = true
+		} else {
+			newAccounts = append(newAccounts, account)
+		}
+	}
+
+	vault.Accounts = newAccounts
+	vault.Save()
+	return isDeleted
 }
