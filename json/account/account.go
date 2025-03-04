@@ -3,15 +3,15 @@ package account
 import (
 	"crypto/md5"
 	"demo/json/files"
+	"demo/json/utils"
 	"encoding/hex"
-	"encoding/json"
 	"fmt"
 )
 
 type Account struct {
-	Username string `json:"username"`
+	Login    string `json:"login"`
 	Password string `json:"password"`
-	Bio      string `json:"bio"`
+	Url      string `json:"url"`
 }
 
 func (a *Account) setPassword(password string) {
@@ -19,20 +19,10 @@ func (a *Account) setPassword(password string) {
 	a.Password = hex.EncodeToString(hash[:])
 }
 
-func (a *Account) ToJSON() ([]byte, error) {
-	bytes, err := json.MarshalIndent(a, "", "	")
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-		return nil, err
-	}
-
-	return bytes, nil
-}
-
 func NewAccount(username, password, bio string) *Account {
 	a := &Account{
-		Username: username,
-		Bio:      bio,
+		Login: username,
+		Url:   bio,
 	}
 	a.setPassword(password)
 
@@ -40,8 +30,17 @@ func NewAccount(username, password, bio string) *Account {
 }
 
 func CreateAccount() {
-	myAccount := NewAccount("root", "password", "Hello, World!")
-	jsonBytes, err := myAccount.ToJSON()
+	//myAccount := NewAccount("root", "password", "Hello, World!")
+
+	login := utils.PromptData("Enter login")
+	password := utils.PromptData("Enter password")
+	url := utils.PromptData("Enter url")
+	myAccount := NewAccount(login, password, url)
+
+	accountsVault := NewAccountsVault()
+	accountsVault.AddAccount(*myAccount)
+
+	jsonBytes, err := accountsVault.ToJSON()
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
