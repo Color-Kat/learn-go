@@ -7,10 +7,19 @@ import (
 	"strings"
 )
 
+var testMatrix = matrices.Matrix[int]{
+	Rows: 2,
+	Cols: 2,
+	Data: [][]int{
+		{2, 2},
+		{3, 3},
+	},
+}
+
 var ring string = "int"
 var matricesByRing = map[string][]any{
-	"int":  {nil, nil},
-	"bool": {nil, nil},
+	"int":  {testMatrix, testMatrix},
+	"bool": {testMatrix, testMatrix},
 }
 
 func main() {
@@ -80,9 +89,9 @@ func inputMatrix(matrixIndex int) {
 
 	switch ring {
 	case "int":
-		matricesByRing[ring][matrixIndex] = matrices.InputIntMatrix(cols, rows)
+		matricesByRing[ring][matrixIndex] = *matrices.InputIntMatrix(cols, rows)
 	case "bool":
-		matricesByRing[ring][matrixIndex] = matrices.InputBoolMatrix(cols, rows)
+		matricesByRing[ring][matrixIndex] = *matrices.InputBoolMatrix(cols, rows)
 	default:
 		utils.Prompt("Invalid ring")
 	}
@@ -114,7 +123,7 @@ func chooseOperation() {
 
 	switch operation {
 	case "1":
-		fmt.Println(operations.Add())
+		utils.Prompt(fmt.Sprint(operations.Add()))
 	case "2":
 		//matrices.MatrixSubtraction(matrixA, matrixB)
 	default:
