@@ -16,7 +16,7 @@ type Matrix[T int | bool] struct {
 	Cols int
 }
 
-func NewMatrix[T int | bool](cols, rows int, neutralElement T) *Matrix[T] {
+func NewMatrix[T int | bool](rows, cols int, neutralElement T) *Matrix[T] {
 	matrix := &Matrix[T]{}
 
 	matrix.Data = make([][]T, rows)
@@ -86,9 +86,7 @@ type MatrixOperations struct {
 	currentRow, currentCol, currentCol2 int
 }
 
-type IMatrixOperations interface {
-	Add() any
-}
+// IntMatrix and BoolMatrix has 2 fields: MatrixA, MatrixB
 
 type IntMatrixOperation struct {
 	MatrixOperations
@@ -98,6 +96,11 @@ type IntMatrixOperation struct {
 type BoolMatrixOperation struct {
 	MatrixOperations
 	MatrixA, MatrixB Matrix[bool]
+}
+
+type IMatrixOperations interface {
+	Add() any
+	Multiply() any
 }
 
 // Add Base function for addiction matrices
@@ -136,9 +139,9 @@ func (mo *MatrixOperations) multiply(
 	}
 }
 
-// func (mo *IntMatrixOperation) Add() *Matrix[int] {
+// Add sum 2 int matrices
 func (mo *IntMatrixOperation) Add() any {
-	resultMatrix := NewMatrix[int](mo.MatrixA.Cols, mo.MatrixA.Rows, 0)
+	resultMatrix := NewMatrix[int](mo.MatrixA.Rows, mo.MatrixA.Cols, 0)
 
 	mo.add(
 		mo.MatrixA.Rows, mo.MatrixA.Cols,
@@ -151,11 +154,51 @@ func (mo *IntMatrixOperation) Add() any {
 	return resultMatrix
 }
 
-// func (mo *BoolMatrixOperation) Add() *Matrix[bool] {
+// Add sum 2 bool matrices
 func (mo *BoolMatrixOperation) Add() any {
-	resultMatrix := NewMatrix[bool](mo.MatrixA.Cols, mo.MatrixA.Rows, false)
+	resultMatrix := NewMatrix[bool](mo.MatrixA.Rows, mo.MatrixA.Cols, false)
 
 	mo.add(
+		mo.MatrixA.Rows, mo.MatrixA.Cols,
+		mo.MatrixB.Rows, mo.MatrixB.Cols,
+		func() {
+			resultMatrix.Data[mo.currentRow][mo.currentCol] = mo.MatrixA.Data[mo.currentRow][mo.currentCol] || mo.MatrixB.Data[mo.currentRow][mo.currentCol]
+		},
+	)
+
+	return resultMatrix
+}
+
+// Multiply multiply 2 int matrices
+func (mo *IntMatrixOperation) Multiply() any {
+	resultMatrix := NewMatrix[int](mo.MatrixA.Rows, mo.MatrixB.Cols, 0)
+
+	mo.multiply(
+		mo.MatrixA.Rows, mo.MatrixA.Cols,
+		mo.MatrixB.Rows, mo.MatrixB.Cols,
+		func() {
+			fmt.Println(
+				"Calculation: ",
+				resultMatrix.Data[mo.currentRow][mo.currentCol], "+=",
+				mo.MatrixA.Data[mo.currentRow][mo.currentCol]*
+					mo.MatrixB.Data[mo.currentCol][mo.currentCol2],
+				mo.currentRow, mo.currentCol,
+			)
+
+			resultMatrix.Data[mo.currentRow][mo.currentCol] +=
+				mo.MatrixA.Data[mo.currentRow][mo.currentCol] *
+					mo.MatrixB.Data[mo.currentCol][mo.currentCol2]
+		},
+	)
+
+	return resultMatrix
+}
+
+// Multiply multiply 2 int matrices
+func (mo *BoolMatrixOperation) Multiply() any {
+	resultMatrix := NewMatrix[bool](mo.MatrixA.Rows, mo.MatrixB.Cols, false)
+
+	mo.multiply(
 		mo.MatrixA.Rows, mo.MatrixA.Cols,
 		mo.MatrixB.Rows, mo.MatrixB.Cols,
 		func() {

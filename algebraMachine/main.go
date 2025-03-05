@@ -11,10 +11,14 @@ var testMatrix = matrices.Matrix[int]{
 	Rows: 2,
 	Cols: 2,
 	Data: [][]int{
-		{2, 2},
-		{3, 3},
+		{1, 2},
+		{3, 4},
 	},
 }
+
+// Square
+//  7 10
+// 15 22
 
 var ring string = "int"
 var matricesByRing = map[string][]any{
@@ -101,12 +105,14 @@ func chooseOperation() {
 	operation := utils.Prompt(
 		"Choose an operation: \n" +
 			"1. Addition\n" +
-			"2. Subtraction\n" +
-			"3. Multiplication\n" +
-			"4. Min\n" +
-			"5. Max\n",
+			//"2. Subtraction\n" +
+			"2. Multiplication\n" +
+			"3. Min\n" +
+			"4. Max\n",
 	)
 
+	// Create instance of struct with specific ring operations
+	// It's easy to implement more rings
 	var operations matrices.IMatrixOperations
 	switch ring {
 	case "int":
@@ -125,7 +131,7 @@ func chooseOperation() {
 	case "1":
 		utils.Prompt(fmt.Sprint(operations.Add()))
 	case "2":
-		//matrices.MatrixSubtraction(matrixA, matrixB)
+		utils.Prompt(fmt.Sprint(operations.Multiply()))
 	default:
 		utils.Prompt("Invalid operation")
 	}
