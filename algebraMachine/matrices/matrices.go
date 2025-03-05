@@ -1,4 +1,4 @@
-package matrixOperations
+package matrices
 
 import (
 	"algebraMachine/utils"
@@ -79,15 +79,29 @@ func InputBoolMatrix(cols, rows int) *Matrix[bool] {
 // ------------------------------
 
 /**
- * MatrixOperation
+ * MatrixOperations
  */
 
-type MatrixOperation struct {
+type MatrixOperations struct {
 	currentRow, currentCol, currentCol2 int
 }
 
+type IMatrixOperations interface {
+	Add() any
+}
+
+type IntMatrixOperation struct {
+	MatrixOperations
+	MatrixA, MatrixB Matrix[int]
+}
+
+type BoolMatrixOperation struct {
+	MatrixOperations
+	MatrixA, MatrixB Matrix[bool]
+}
+
 // Add Base function for addiction matrices
-func (mo *MatrixOperation) add(
+func (mo *MatrixOperations) add(
 	rowsCount1, colsCount1 int,
 	rowsCount2, colsCount2 int,
 	addFunc func(),
@@ -104,7 +118,7 @@ func (mo *MatrixOperation) add(
 }
 
 // Multiply Base function for multiplication matrices
-func (mo *MatrixOperation) multiply(
+func (mo *MatrixOperations) multiply(
 	rowsCount1, colsCount1 int,
 	rowsCount2, colsCount2 int,
 	multiplyFunc func(),
@@ -122,32 +136,30 @@ func (mo *MatrixOperation) multiply(
 	}
 }
 
-func (mo *MatrixOperation) AddInt(
-	matrixA, matrixB Matrix[int],
-) *Matrix[int] {
-	resultMatrix := NewMatrix[int](matrixA.Cols, matrixA.Rows, 0)
+// func (mo *IntMatrixOperation) Add() *Matrix[int] {
+func (mo *IntMatrixOperation) Add() any {
+	resultMatrix := NewMatrix[int](mo.MatrixA.Cols, mo.MatrixA.Rows, 0)
 
 	mo.add(
-		matrixA.Rows, matrixA.Cols,
-		matrixB.Rows, matrixB.Cols,
+		mo.MatrixA.Rows, mo.MatrixA.Cols,
+		mo.MatrixB.Rows, mo.MatrixB.Cols,
 		func() {
-			resultMatrix.Data[mo.currentRow][mo.currentCol] = matrixA.Data[mo.currentRow][mo.currentCol] + matrixB.Data[mo.currentRow][mo.currentCol]
+			resultMatrix.Data[mo.currentRow][mo.currentCol] = mo.MatrixA.Data[mo.currentRow][mo.currentCol] + mo.MatrixB.Data[mo.currentRow][mo.currentCol]
 		},
 	)
 
 	return resultMatrix
 }
 
-func (mo *MatrixOperation) AddBool(
-	matrixA, matrixB Matrix[bool],
-) *Matrix[bool] {
-	resultMatrix := NewMatrix[bool](matrixA.Cols, matrixA.Rows, false)
+// func (mo *BoolMatrixOperation) Add() *Matrix[bool] {
+func (mo *BoolMatrixOperation) Add() any {
+	resultMatrix := NewMatrix[bool](mo.MatrixA.Cols, mo.MatrixA.Rows, false)
 
 	mo.add(
-		matrixA.Rows, matrixA.Cols,
-		matrixB.Rows, matrixB.Cols,
+		mo.MatrixA.Rows, mo.MatrixA.Cols,
+		mo.MatrixB.Rows, mo.MatrixB.Cols,
 		func() {
-			resultMatrix.Data[mo.currentRow][mo.currentCol] = matrixA.Data[mo.currentRow][mo.currentCol] || matrixB.Data[mo.currentRow][mo.currentCol]
+			resultMatrix.Data[mo.currentRow][mo.currentCol] = mo.MatrixA.Data[mo.currentRow][mo.currentCol] || mo.MatrixB.Data[mo.currentRow][mo.currentCol]
 		},
 	)
 

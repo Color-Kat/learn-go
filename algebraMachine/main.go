@@ -1,14 +1,14 @@
 package main
 
 import (
-	"algebraMachine/matrixOperations"
+	"algebraMachine/matrices"
 	"algebraMachine/utils"
 	"fmt"
 	"strings"
 )
 
-var ring string
-var matrices = map[string][]any{
+var ring string = "int"
+var matricesByRing = map[string][]any{
 	"int":  {nil, nil},
 	"bool": {nil, nil},
 }
@@ -27,9 +27,9 @@ Main:
 		case option == "3":
 			inputMatrix(1)
 		case option == "4":
-			utils.Prompt(fmt.Sprintln("MATRIX 1: \n", matrices[ring][0], "\nMatrix 2: \n", matrices[ring][1]))
-			//case option == "5":
-			//	chooseOperation(matrix1, matrix2)
+			utils.Prompt(fmt.Sprintln("MATRIX 1: \n", matricesByRing[ring][0], "\nMatrix 2: \n", matricesByRing[ring][1]))
+		case option == "5":
+			chooseOperation()
 		default:
 			break Main
 		}
@@ -41,7 +41,7 @@ func printMenu() string {
 	fmt.Println("1. Choose ring")
 	fmt.Println("2. Set matrix 1")
 	fmt.Println("3. Set matrix 2")
-	fmt.Println("4. Print matrix")
+	fmt.Println("4. Print matrices")
 	fmt.Println("5. Choose operation")
 	fmt.Println("6. Exit")
 	fmt.Println("--------------------")
@@ -80,30 +80,44 @@ func inputMatrix(matrixIndex int) {
 
 	switch ring {
 	case "int":
-		matrices[ring][matrixIndex] = matrixOperations.InputIntMatrix(cols, rows)
+		matricesByRing[ring][matrixIndex] = matrices.InputIntMatrix(cols, rows)
 	case "bool":
-		matrices[ring][matrixIndex] = matrixOperations.InputBoolMatrix(cols, rows)
+		matricesByRing[ring][matrixIndex] = matrices.InputBoolMatrix(cols, rows)
 	default:
 		utils.Prompt("Invalid ring")
 	}
 }
 
-//func chooseOperation[T int | bool](matrixA, matrixB matrixOperations.IMatrix) {
-//operation := utils.Prompt(
-//	"Choose an operation: \n" +
-//		"1. MatrixAddition\n" +
-//		"2. Subtraction\n" +
-//		"3. Multiplication\n" +
-//		"4. Min\n" +
-//		"5. Max\n",
-//)
-//
-//switch operation {
-//case "1":
-//	matrixOperations.MatrixAddition(matrixA, matrixB)
-//case "2":
-//	matrixOperations.MatrixSubtraction(matrixA, matrixB)
-//default:
-//	utils.Prompt("Invalid operation")
-//}
-//}
+func chooseOperation() {
+	operation := utils.Prompt(
+		"Choose an operation: \n" +
+			"1. Addition\n" +
+			"2. Subtraction\n" +
+			"3. Multiplication\n" +
+			"4. Min\n" +
+			"5. Max\n",
+	)
+
+	var operations matrices.IMatrixOperations
+	switch ring {
+	case "int":
+		operations = &matrices.IntMatrixOperation{
+			MatrixA: matricesByRing[ring][0].(matrices.Matrix[int]),
+			MatrixB: matricesByRing[ring][1].(matrices.Matrix[int]),
+		}
+	case "bool":
+		operations = &matrices.BoolMatrixOperation{
+			MatrixA: matricesByRing[ring][0].(matrices.Matrix[bool]),
+			MatrixB: matricesByRing[ring][1].(matrices.Matrix[bool]),
+		}
+	}
+
+	switch operation {
+	case "1":
+		fmt.Println(operations.Add())
+	case "2":
+		//matrices.MatrixSubtraction(matrixA, matrixB)
+	default:
+		utils.Prompt("Invalid operation")
+	}
+}
