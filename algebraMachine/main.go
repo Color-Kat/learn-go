@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var testMatrix = matrices.Matrix[int]{
+var testIntMatrix = matrices.Matrix[int]{
 	Rows: 2,
 	Cols: 2,
 	Data: [][]int{
@@ -16,20 +16,32 @@ var testMatrix = matrices.Matrix[int]{
 	},
 }
 
-// Square
+// Answer for Square
 //  7 10
 // 15 22
 
-var ring string = "int"
+var testBoolMatrix = matrices.Matrix[bool]{
+	Rows: 2,
+	Cols: 2,
+	Data: [][]bool{
+		{true, false},
+		{true, true},
+	},
+}
+
+// Answer for Square
+// true false
+// true true
+
+var ring = "int" // Current ring for operations
 var matricesByRing = map[string][]any{
-	"int":  {testMatrix, testMatrix},
-	"bool": {testMatrix, testMatrix},
+	"int":  {testIntMatrix, testIntMatrix},
+	"bool": {testBoolMatrix, testBoolMatrix},
 }
 
 func main() {
 Main:
 	for {
-		utils.ClearConsole()
 		option := printMenu()
 
 		switch {
@@ -40,17 +52,20 @@ Main:
 		case option == "3":
 			inputMatrix(1)
 		case option == "4":
+			utils.ClearConsole()
 			utils.Prompt(fmt.Sprintln("MATRIX 1: \n", matricesByRing[ring][0], "\nMatrix 2: \n", matricesByRing[ring][1]))
 		case option == "5":
 			chooseOperation()
 		default:
 			break Main
 		}
-
 	}
 }
 
 func printMenu() string {
+	utils.ClearConsole()
+	fmt.Println("____ Matrix operation ____")
+	fmt.Println("__ on an arbitrary ring __")
 	fmt.Println("1. Choose ring")
 	fmt.Println("2. Set matrix 1")
 	fmt.Println("3. Set matrix 2")
@@ -64,6 +79,7 @@ func printMenu() string {
 }
 
 func chooseRing() {
+	utils.ClearConsole()
 	fmt.Println("__Choose ring__")
 	fmt.Println("1. Integers")
 	fmt.Println("2. Booleans")
@@ -77,6 +93,7 @@ func chooseRing() {
 }
 
 func inputMatrix(matrixIndex int) {
+	utils.ClearConsole()
 	sizes := strings.Fields(utils.Prompt("Matrix size: "))
 
 	if len(sizes) < 2 {
@@ -102,13 +119,14 @@ func inputMatrix(matrixIndex int) {
 }
 
 func chooseOperation() {
+	utils.ClearConsole()
 	operation := utils.Prompt(
 		"Choose an operation: \n" +
 			"1. Addition\n" +
 			//"2. Subtraction\n" +
-			"2. Multiplication\n" +
-			"3. Min\n" +
-			"4. Max\n",
+			"2. Multiplication\n",
+		//"3. Min\n" +
+		//"4. Max\n",
 	)
 
 	// Create instance of struct with specific ring operations
