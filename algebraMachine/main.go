@@ -1,63 +1,69 @@
-
 package main
 
 import (
 	"algebraMachine/matrixOperations"
-	//"algebraMachine/matrixOperations"
-	"algebraMachine/matrixOperationsDeprecated"
 	"algebraMachine/utils"
 	"fmt"
 	"strings"
 )
 
+var ring string
+var matrices = map[string][]any{
+	"int":  {nil, nil},
+	"bool": {nil, nil},
+}
+
 func main() {
-	matrix1 := matrixOperations.Matrix[int]{
-		data: [][]int{
-				{1, 2},
-				{3, 4},
-			},
-		rows: 2,
-		cols: 2
-	}
-
-	return
-
-	matrix1 := matrixOperationsDeprecated.Matrix{}
-	matrix2 := matrixOperationsDeprecated.Matrix{}
-
+Main:
 	for {
 		utils.ClearConsole()
 		option := printMenu()
 
 		switch {
 		case option == "1":
-			inputMatrix(&matrix1)
+			chooseRing()
 		case option == "2":
-			inputMatrix(&matrix2)
+			inputMatrix(0)
 		case option == "3":
-			utils.Prompt(fmt.Sprintln("MATRIX 1: \n", matrix1, "\nMatrix 2: \n", matrix2))
+			inputMatrix(1)
 		case option == "4":
-			chooseOperation(matrix1, matrix2)
+			utils.Prompt(fmt.Sprintln("MATRIX 1: \n", matrices[ring][0], "\nMatrix 2: \n", matrices[ring][1]))
+			//case option == "5":
+			//	chooseOperation(matrix1, matrix2)
+		default:
+			break Main
 		}
 
-		_ = matrix1
-		_ = matrix2
 	}
 }
 
 func printMenu() string {
-	fmt.Println("1. Set matrix 1")
-	fmt.Println("2. Set matrix 2")
-	fmt.Println("3. Print matrix")
-	fmt.Println("4. Choose operation")
-	fmt.Println("5. Exit")
+	fmt.Println("1. Choose ring")
+	fmt.Println("2. Set matrix 1")
+	fmt.Println("3. Set matrix 2")
+	fmt.Println("4. Print matrix")
+	fmt.Println("5. Choose operation")
+	fmt.Println("6. Exit")
 	fmt.Println("--------------------")
 
 	option := utils.Prompt("Choose an option: ")
 	return option
 }
 
-func inputMatrix(matrix *matrixOperationsDeprecated.Matrix) {
+func chooseRing() {
+	fmt.Println("__Choose ring__")
+	fmt.Println("1. Integers")
+	fmt.Println("2. Booleans")
+
+	switch utils.Prompt("Enter option: ") {
+	case "1":
+		ring = "int"
+	case "2":
+		ring = "bool"
+	}
+}
+
+func inputMatrix(matrixIndex int) {
 	sizes := strings.Fields(utils.Prompt("Matrix size: "))
 
 	if len(sizes) < 2 {
@@ -72,25 +78,32 @@ func inputMatrix(matrix *matrixOperationsDeprecated.Matrix) {
 		return
 	}
 
-	matrix.Populate(rows, cols)
-}
-
-func chooseOperation(matrixA, matrixB matrixOperationsDeprecated.Matrix) {
-	operation := utils.Prompt(
-		"Choose an operation: \n" +
-			"1. MatrixAddition\n" +
-			"2. Subtraction\n" +
-			"3. Multiplication\n" +
-			"4. Min\n" +
-			"5. Max\n",
-	)
-
-	switch operation {
-	case "1":
-		matrixOperationsDeprecated.MatrixAddition(matrixA, matrixB)
-	case "2":
-		matrixOperationsDeprecated.MatrixSubtraction(matrixA, matrixB)
+	switch ring {
+	case "int":
+		matrices[ring][matrixIndex] = matrixOperations.InputIntMatrix(cols, rows)
+	case "bool":
+		matrices[ring][matrixIndex] = matrixOperations.InputBoolMatrix(cols, rows)
 	default:
-		utils.Prompt("Invalid operation")
+		utils.Prompt("Invalid ring")
 	}
 }
+
+//func chooseOperation[T int | bool](matrixA, matrixB matrixOperations.IMatrix) {
+//operation := utils.Prompt(
+//	"Choose an operation: \n" +
+//		"1. MatrixAddition\n" +
+//		"2. Subtraction\n" +
+//		"3. Multiplication\n" +
+//		"4. Min\n" +
+//		"5. Max\n",
+//)
+//
+//switch operation {
+//case "1":
+//	matrixOperations.MatrixAddition(matrixA, matrixB)
+//case "2":
+//	matrixOperations.MatrixSubtraction(matrixA, matrixB)
+//default:
+//	utils.Prompt("Invalid operation")
+//}
+//}

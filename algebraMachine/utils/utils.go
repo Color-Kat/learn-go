@@ -9,6 +9,7 @@ import (
 )
 
 var ToInt = strconv.Atoi
+var ToBool = strconv.ParseBool
 
 func Prompt(prompt string) string {
 	fmt.Println(prompt)
