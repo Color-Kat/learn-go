@@ -62,7 +62,6 @@ func solve() string {
 	}
 
 	currentBurnTime := 1
-	//looseBurnTime := 0 // With this time we cant extend burn time
 	for i := 0; i < n; i++ {
 
 		nextBurnTime := currentBurnTime + logBurnTimes[i] - 1
