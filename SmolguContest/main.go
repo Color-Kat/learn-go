@@ -10,17 +10,11 @@ import (
 
 var ToInt = strconv.Atoi
 
-func Prompt(prompt string) string {
-	if prompt != "" {
-		fmt.Println(prompt)
-	}
-
+func Prompt() string {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 
-	input := scanner.Text()
-
-	return input
+	return scanner.Text()
 }
 
 func MapSlice[T any, U any](slice []T, callback func(elem T) U) []U {
@@ -81,6 +75,7 @@ func solve() string {
 }
 
 func main() {
+
 	//fmt.Println(solve())
 
 	//file, _ := os.Open("INPUT.TXT")
