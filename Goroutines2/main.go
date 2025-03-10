@@ -3,22 +3,26 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"sync"
 	"time"
 )
 
-func request() {
-	response, _ := http.Get("https://google.com")
+func request(wg *sync.WaitGroup) {
+	response, _ := http.Get("https://vpn.colorbit.ru/")
 	fmt.Println(response.StatusCode)
+	wg.Done()
 }
 
 func main() {
 	startTime := time.Now()
 
-	for i := 0; i < 10; i++ {
-		go request()
+	var wg sync.WaitGroup
+	for i := 0; i < 100; i++ {
+		wg.Add(1)
+		go request(&wg)
 	}
 
-	time.Sleep(3 * time.Second)
+	wg.Wait()
 
 	fmt.Println(time.Since(startTime))
 }
