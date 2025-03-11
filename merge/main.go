@@ -16,20 +16,7 @@ func Prompt() string {
 	return scanner.Text()
 }
 
-func main() {
-
-	//n, _ := ToInt(Prompt())
-	//m, _ := ToInt(Prompt())
-
-	//for i := 0; i < n; i++ {
-	//	a[i], _ = ToInt(Prompt())
-	//	a[i], _ = ToInt(Prompt())
-	//}
-	//
-	//for i := 0; i < m; i++ {
-	//	b[i], _ = ToInt(Prompt())
-	//}
-
+func mergeTest() {
 	a := []int{1, 2, 5, 6, 84}
 	b := []int{2, 3, 6, 7, 40, 85}
 	n := len(a)
@@ -60,4 +47,66 @@ func main() {
 	}
 
 	fmt.Println(c)
+}
+
+//func squareAndSort(array []int) []int {
+//
+//	squares := make([]int, len(array))
+//
+//	l, r := 0, len(array) - 1
+//	index := len(array) - 1
+//
+//	for r >= l {
+//		pow1, pow2 := array[l] * array[l], array[r] * array[r]
+//
+//		if pow1 >= pow2 {
+//			squares[ind] = pow1
+//
+//		}
+//	}
+//
+//
+//	return array
+//}
+
+func maxIncreasing(nums []int) int {
+	_, r := 0, 0
+
+	maxIncrease := 0
+	currentIncrease := 0
+
+	for r < len(nums)-1 {
+		if nums[r+1] > nums[r] {
+			currentIncrease++
+			r++
+
+			if currentIncrease > maxIncrease {
+				maxIncrease = currentIncrease
+			}
+		} else {
+			currentIncrease = 0
+			r++
+		}
+	}
+
+	return maxIncrease + 1
+}
+
+func main() {
+
+	//mergeTest()
+	fmt.Println(maxIncreasing([]int{3, 1, 3, 8, 3, 1, 8, 2}))
+
+	//n, _ := ToInt(Prompt())
+	//m, _ := ToInt(Prompt())
+
+	//for i := 0; i < n; i++ {
+	//	a[i], _ = ToInt(Prompt())
+	//	a[i], _ = ToInt(Prompt())
+	//}
+	//
+	//for i := 0; i < m; i++ {
+	//	b[i], _ = ToInt(Prompt())
+	//}
+
 }
