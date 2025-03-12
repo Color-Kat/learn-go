@@ -27,6 +27,11 @@ func MapSlice[T any, U any](slice []T, callback func(elem T) U) []U {
 	return result
 }
 
+var intArray = MapSlice[string, int]([]string{"1", "2", "4"}, func(str string) int {
+	value, _ := ToInt(str)
+	return value
+})
+
 // H
 // m minutes
 // n logs
