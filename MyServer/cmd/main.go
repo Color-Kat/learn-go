@@ -2,19 +2,18 @@ package main
 
 import (
 	"demo/http/configs"
+	"demo/http/internal/auth"
 	"fmt"
 	"net/http"
 )
 
-func helloHandler(w http.ResponseWriter, req *http.Request) {
-	fmt.Println("123")
-}
-
 func main() {
-	_ := configs.LoadConfig()
+	config := configs.LoadConfig()
 
 	router := http.NewServeMux()
-	router.HandleFunc("/hello", helloHandler)
+	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
+		Config: config,
+	})
 
 	port := "8081"
 	server := http.Server{
