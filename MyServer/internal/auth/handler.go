@@ -2,6 +2,7 @@ package auth
 
 import (
 	"demo/http/configs"
+	"demo/http/pkg/response"
 	"fmt"
 	"net/http"
 )
@@ -23,8 +24,11 @@ func NewAuthHandler(router *http.ServeMux, deps AuthHandlerDeps) {
 
 func (handler *AuthHandler) Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		fmt.Println(handler.Config.Auth.SecretToken)
 		fmt.Println("login")
+		res := LoginResponse{
+			Token: handler.Config.Auth.SecretToken,
+		}
+		response.Json(w, res, 200)
 	}
 }
 
