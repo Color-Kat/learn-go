@@ -7,19 +7,19 @@ import (
 	"time"
 )
 
-func request(wg *sync.WaitGroup) {
+func requestWaitGroup(wg *sync.WaitGroup) {
 	response, _ := http.Get("https://vpn.colorbit.ru/")
 	fmt.Println(response.StatusCode)
 	wg.Done()
 }
 
-func main() {
+func waitGroup() {
 	startTime := time.Now()
 
 	var wg sync.WaitGroup
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
-		go request(&wg)
+		go requestWaitGroup(&wg)
 	}
 
 	wg.Wait()
@@ -27,6 +27,23 @@ func main() {
 	fmt.Println(time.Since(startTime))
 }
 
-func printHi() {
-	fmt.Println("Hi from go func")
+func requestChannel(codeCh chan int) {
+	response, _ := http.Get("https://vpn.colorbit.ru/")
+	codeCh <- response.StatusCode
+}
+
+func channel() {
+	codeCh := make(chan int)
+	for i := 0; i < 10; i++ {
+		go requestChannel(codeCh)
+	}
+	for res := range codeCh {
+		fmt.Println(res)
+	}
+}
+
+func main() {
+	//waitGroup()
+
+	channel()
 }
