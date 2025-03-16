@@ -7,3 +7,6 @@ POST localhost:8081/auth/login
     "email": "coco@co.co",
     "password": "123"
 }
+
+###
+DELETE localhost:8081/link/1

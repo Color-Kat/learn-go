@@ -8,7 +8,7 @@ import (
 
 func main() {
 	config := configs.LoadConfig()
-	database := db.NewDB(config)
+	database := database.NewDB(config)
 
 	database.AutoMigrate(&link.Link{})
 }

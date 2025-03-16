@@ -3,20 +3,28 @@ package main
 import (
 	"demo/http/configs"
 	"demo/http/internal/auth"
-	"demo/http/pkg/db"
+	"demo/http/internal/link"
+	"demo/http/pkg/database"
 	"fmt"
 	"net/http"
 )
 
 func main() {
 	config := configs.LoadConfig()
-	_ = db.NewDB(config)
-	fmt.Println(config)
-
+	db := database.NewDB(config)
 	router := http.NewServeMux()
+
+	// Repositories
+	linkRepository := link.NewLinkRepository(db)
+
+	// --- handlers --- //
 	auth.NewAuthHandler(router, auth.AuthHandlerDeps{
 		Config: config,
 	})
+	link.NewLinkHandler(router, link.LinkHandlerDeps{
+		LinkRepository: linkRepository,
+	})
+	// --- handlers --- //
 
 	port := "8081"
 	server := http.Server{
