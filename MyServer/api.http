@@ -9,4 +9,11 @@ POST localhost:8081/auth/login
 }
 
 ###
+POST localhost:8081/link
+
+{
+    "url": "https:/"
+}
+
+###
 DELETE localhost:8081/link/1

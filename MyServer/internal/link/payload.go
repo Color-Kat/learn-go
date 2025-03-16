@@ -1,10 +1,5 @@
 package link
 
-type LoginRequest struct {
-	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
-}
-
-type LoginResponse struct {
-	Token string `json:"token"`
+type LinkCreateRequest struct {
+	Url string `json:"url" validate:"required,url"`
 }

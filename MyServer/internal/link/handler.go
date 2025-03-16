@@ -26,16 +26,18 @@ func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 
 func (handler *LinkHandler) Create() http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		body, err := request.HandleBody[LoginRequest](&w, req)
+		body, err := request.HandleBody[LinkCreateRequest](&w, req)
 		if err != nil {
 			return
 		}
-		fmt.Println(body)
 
-		res := LoginResponse{
-			Token: handler.Config.Auth.SecretToken,
+		link := NewLink(body.Url)
+		createdLink, err := handler.LinkRepository.Create(link)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
 		}
-		response.Json(w, res, 200)
+
+		response.Json(w, createdLink, http.StatusCreated)
 	}
 }
 
@@ -44,16 +46,6 @@ func (handler *LinkHandler) Update() http.HandlerFunc {
 		id := req.PathValue("id")
 		fmt.Println(id)
 
-		body, err := request.HandleBody[LoginRequest](&w, req)
-		if err != nil {
-			return
-		}
-		fmt.Println(body)
-
-		res := LoginResponse{
-			Token: handler.Config.Auth.SecretToken,
-		}
-		response.Json(w, res, 200)
 	}
 }
 
