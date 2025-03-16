@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"fmt"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -21,8 +22,15 @@ func LoadConfig() *Config {
 		log.Println("Error loading .env file, using default config")
 	}
 
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		os.Getenv("DB_HOST"),
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PORT"))
+
 	return &Config{
-		Db:   DbConfig{Dsn: os.Getenv("DSN")},
+		Db:   DbConfig{Dsn: dsn},
 		Auth: AuthConfig{SecretToken: os.Getenv("SECRET_TOKEN")},
 	}
 }
