@@ -12,8 +12,19 @@ POST localhost:8081/auth/login
 POST localhost:8081/link
 
 {
-    "url": "https:/"
+    "url": "https://google123.com"
 }
 
 ###
-DELETE localhost:8081/link/1
+GET localhost:8081/teeewr
+
+###
+PATCH localhost:8081/link/3
+
+{
+    "url": "https://google.com",
+    "hash": "goo.gl"
+}
+
+###
+DELETE localhost:8081/link/4
