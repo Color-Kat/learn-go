@@ -12,7 +12,7 @@ POST localhost:8081/auth/login
 POST localhost:8081/link
 
 {
-    "url": "https://google123.com"
+    "url": "https://mail.ru"
 }
 
 ###
