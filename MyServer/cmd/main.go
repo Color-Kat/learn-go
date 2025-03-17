@@ -27,10 +27,16 @@ func main() {
 	})
 	// --- handlers --- //
 
+	// Middlewares
+	middlewares := middleware.Chain(
+		middleware.CORS,
+		middleware.Logging,
+	)
+
 	port := "8081"
 	server := http.Server{
 		Addr:    ":" + port,
-		Handler: middleware.Logging(router),
+		Handler: middlewares(router),
 	}
 
 	fmt.Println("Server is listening on port " + port)
