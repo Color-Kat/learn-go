@@ -11,6 +11,15 @@ POST localhost:8081/auth/register
 }
 
 ###
+POST localhost:8081/auth/login
+
+{
+    "email": "coco@co.co",
+    "password": "coco12"
+}
+
+
+###
 POST localhost:8081/link
 
 {
