@@ -3,6 +3,7 @@ package auth
 import (
 	"demo/http/internal/user"
 	"errors"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -22,14 +23,19 @@ func (service *AuthService) Register(email, password, name string) (string, erro
 		return "", errors.New(ErrUserExists)
 	}
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return "", err
+	}
+
 	user := &user.User{
 		Email:    email,
-		Password: "",
+		Password: string(hashedPassword),
 		Name:     name,
 		Model:    gorm.Model{},
 	}
 
-	_, err := service.UserRepository.Create(user)
+	_, err = service.UserRepository.Create(user)
 	if err != nil {
 		return "", err
 	}

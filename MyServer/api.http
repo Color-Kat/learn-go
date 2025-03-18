@@ -2,11 +2,12 @@ GET localhost:8081/hello
 Authorization: Bearer 12298fdncsdaj
 
 ###
-POST localhost:8081/auth/login
+POST localhost:8081/auth/register
 
 {
     "email": "coco@co.co",
-    "password": "123"
+    "password": "coco12",
+    "name": "coco_sh"
 }
 
 ###
