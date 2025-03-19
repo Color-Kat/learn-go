@@ -1,6 +1,7 @@
 package link
 
 import (
+	"demo/http/pkg/middleware"
 	"demo/http/pkg/request"
 	"demo/http/pkg/response"
 	"gorm.io/gorm"
@@ -19,9 +20,9 @@ func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	handler := LinkHandler{
 		LinkRepository: deps.LinkRepository,
 	}
-	router.HandleFunc("POST /link", handler.Create())
-	router.HandleFunc("PATCH /link/{id}", handler.Update())
-	router.HandleFunc("DELETE /link/{id}", handler.Delete())
+	router.Handle("POST /link", middleware.IsAuthed(handler.Create()))
+	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update()))
+	router.Handle("DELETE /link/{id}", middleware.IsAuthed(handler.Delete()))
 	router.HandleFunc("GET /{hash}", handler.GoTo())
 }
 
