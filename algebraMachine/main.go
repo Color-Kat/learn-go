@@ -1,9 +1,11 @@
 package main
 
 import (
+	"algebraMachine/floydWarshall"
 	"algebraMachine/matrices"
 	"algebraMachine/utils"
 	"fmt"
+	"math"
 	"strings"
 )
 
@@ -124,7 +126,8 @@ func chooseOperation() {
 		"Choose an operation: \n" +
 			"1. Addition\n" +
 			//"2. Subtraction\n" +
-			"2. Multiplication\n",
+			"2. Multiplication\n" +
+			"3. Floyd Warshall (only for int)\n",
 		//"3. Min\n" +
 		//"4. Max\n",
 	)
@@ -150,6 +153,36 @@ func chooseOperation() {
 		utils.Prompt(fmt.Sprint(operations.Add()))
 	case "2":
 		utils.Prompt(fmt.Sprint(operations.Multiply()))
+	case "3":
+		inf := math.MaxInt32
+		graph := [][]int{
+			{0, 4, 11},
+			{6, 0, 2},
+			{3, inf, 0},
+		}
+
+		//graph = matricesByRing["int"][0].(matrices.Matrix[int]).Data
+
+		fmt.Println("___FLoyd Warshall algorithm___")
+		fmt.Println("Initial graph:")
+		floydWarshall.PrintFloydWarshallGraph(graph)
+
+		result, next := floydWarshall.FloydWarshall(graph)
+
+		fmt.Println("Graph of the shortest distances:")
+		floydWarshall.PrintFloydWarshallGraph(result)
+
+		start, end := 0, 2
+		path := floydWarshall.FindPath(next, start, end)
+
+		if path != nil {
+			fmt.Printf("Path from %d to %d: %v\n", start, end, path)
+			fmt.Printf("Distance: %d\n", result[start][end])
+		} else {
+			fmt.Printf("No path from %d to %d\n", start, end)
+		}
+
+		utils.Prompt("Press any key")
 	default:
 		utils.Prompt("Invalid operation")
 	}

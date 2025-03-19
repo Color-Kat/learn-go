@@ -11,7 +11,4 @@ for j in range(m):
     for i in range(fromI, n):
         counts[lst[i]] = counts.get(lst[i], 0) + 1
 
-    result.append(len(counts))
-
-for i in range(len(result)):
-    print(result[i])
+    print(len(counts))
