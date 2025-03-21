@@ -2,6 +2,7 @@ package link
 
 import (
 	"demo/http/configs"
+	"demo/http/pkg/event"
 	"demo/http/pkg/middleware"
 	"demo/http/pkg/request"
 	"demo/http/pkg/response"
@@ -13,20 +14,25 @@ import (
 
 type LinkHandlerDeps struct {
 	LinkRepository *LinkRepository
+	EventBus       *event.EventBus
 	Config         *configs.Config
 }
+
 type LinkHandler struct {
 	LinkRepository *LinkRepository
+	EventBus       *event.EventBus
 }
 
 func NewLinkHandler(router *http.ServeMux, deps LinkHandlerDeps) {
 	handler := LinkHandler{
 		LinkRepository: deps.LinkRepository,
+		EventBus:       deps.EventBus,
 	}
 	router.Handle("POST /link", middleware.IsAuthed(handler.Create(), deps.Config))
 	router.Handle("PATCH /link/{id}", middleware.IsAuthed(handler.Update(), deps.Config))
 	router.Handle("DELETE /link/{id}", middleware.IsAuthed(handler.Delete(), deps.Config))
 	router.HandleFunc("GET /{hash}", handler.GoTo())
+	router.HandleFunc("GET /link", handler.GetAll())
 }
 
 func (handler *LinkHandler) GoTo() http.HandlerFunc {
@@ -37,6 +43,12 @@ func (handler *LinkHandler) GoTo() http.HandlerFunc {
 			http.Error(w, err.Error(), http.StatusNotFound)
 			return
 		}
+
+		//handler.StatRepository.AddClick(link.ID)
+		go handler.EventBus.Publish(event.Event{
+			Type: event.EventLinkVisited,
+			Data: link.ID,
+		})
 
 		http.Redirect(w, req, link.Url, http.StatusTemporaryRedirect)
 	}
@@ -122,5 +134,28 @@ func (handler *LinkHandler) Delete() http.HandlerFunc {
 			return
 		}
 		response.Json(w, nil, 200)
+	}
+}
+
+func (handler *LinkHandler) GetAll() http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		limit, err := strconv.Atoi(req.URL.Query().Get("limit"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		offset, err := strconv.Atoi(req.URL.Query().Get("offset"))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		links := handler.LinkRepository.GetAll(limit, offset)
+		count := handler.LinkRepository.Count()
+		response.Json(w, &GetAllLinksResponse{
+			Links: links,
+			Count: count,
+		}, 200)
 	}
 }

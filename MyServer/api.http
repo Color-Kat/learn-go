@@ -27,7 +27,7 @@ POST localhost:8081/link
 }
 
 ###
-GET localhost:8081/teeewr
+GET localhost:8081/goo.gl
 
 ###
 PATCH localhost:8081/link/3
@@ -40,3 +40,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNvY29AY
 
 ###
 DELETE localhost:8081/link/4
+
+### Get links
+GET localhost:8081/link?limit=2&offset=0

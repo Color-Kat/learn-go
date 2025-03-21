@@ -3,6 +3,7 @@ package main
 import (
 	"demo/http/configs"
 	"demo/http/internal/link"
+	"demo/http/internal/stat"
 	"demo/http/internal/user"
 	"demo/http/pkg/database"
 )
@@ -14,5 +15,6 @@ func main() {
 	database.AutoMigrate(
 		&link.Link{},
 		&user.User{},
+		&stat.Stat{},
 	)
 }
