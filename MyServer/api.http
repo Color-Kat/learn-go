@@ -1,5 +1,5 @@
 GET localhost:8081/hello
-Authorization: Bearer 12298fdncsdaj
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNvY29AY28uY28ifQ.Tdj_6Ip7oLI2Wo0SPzqhwWcbP8XnFNX_ubWDpfWHaHM
 
 ###
 POST localhost:8081/auth/register
@@ -31,6 +31,7 @@ GET localhost:8081/teeewr
 
 ###
 PATCH localhost:8081/link/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNvY29AY28uY28ifQ.Tdj_6Ip7oLI2Wo0SPzqhwWcbP8XnFNX_ubWDpfWHaHM
 
 {
     "url": "https://google.com",
