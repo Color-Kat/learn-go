@@ -43,3 +43,7 @@ DELETE localhost:8081/link/4
 
 ### Get links
 GET localhost:8081/link?limit=2&offset=0
+
+### Get links
+GET localhost:8081/stat?by=day&from=2025-01-01&to=2025-12-31
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNvY29AY28uY28ifQ.Tdj_6Ip7oLI2Wo0SPzqhwWcbP8XnFNX_ubWDpfWHaHM
